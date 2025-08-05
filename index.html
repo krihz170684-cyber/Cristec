@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tienda Online</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f5f5f5; }
+    header { background: #333; color: #fff; padding: 1rem; text-align: center; }
+    nav { background: #444; padding: 0.5rem; text-align: center; }
+    nav a { color: #fff; margin: 0 1rem; text-decoration: none; }
+    .hero { padding: 2rem; background: #e0f7fa; text-align: center; }
+    .productos { display: flex; flex-wrap: wrap; justify-content: center; padding: 2rem; }
+    .producto { background: #fff; margin: 1rem; padding: 1rem; width: 250px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); position: relative; }
+    .producto img { width: 100%; border-radius: 10px; }
+    .producto h3 { margin: 0.5rem 0; }
+    .producto p { color: #333; }
+    .boton { display: block; background: #009688; color: #fff; padding: 0.5rem; text-align: center; border-radius: 5px; margin-top: 1rem; text-decoration: none; cursor: pointer; }
+    footer { background: #222; color: #fff; text-align: center; padding: 1rem; margin-top: 2rem; }
+    .carrito { position: fixed; top: 1rem; right: 1rem; background: #fff; border: 1px solid #ccc; padding: 1rem; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.1); width: 300px; }
+    .carrito h4 { margin-top: 0; }
+    .carrito-item { display: flex; justify-content: space-between; margin-bottom: 0.5rem; }
+    .btn-pagar { background: #ff5722; color: #fff; padding: 0.5rem; border: none; border-radius: 5px; width: 100%; cursor: pointer; margin-top: 1rem; }
+    .metodos-pago { margin-top: 1rem; text-align: center; }
+    .metodos-pago img { width: 50px; margin: 0.5rem; vertical-align: middle; }
+    .qr-info { margin-top: 1rem; text-align: center; }
+    .qr-info img { width: 100px; margin-top: 0.5rem; }
+    .qr-info p { font-size: 0.9rem; margin: 0.2rem 0; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Mi Tienda Online</h1>
+  </header>
+  <nav>
+    <a href="#">Inicio</a>
+    <a href="#productos">Productos</a>
+    <a href="#contacto">Contacto</a>
+  </nav>
+  <section class="hero">
+    <h2>Bienvenido a tu tienda favorita</h2>
+    <p>Encuentra lo que necesitas, ¡a un clic de distancia!</p>
+  </section>
+  <section class="productos" id="productos">
+    <div class="producto">
+      <img src="https://cdn.discordapp.com/attachments/1139273252739285072/1217869822064465980/IMG_20240317_202056_723.jpg" alt="Cargador Samsung">
+      <h3>Cargador Samsung 45W PD Adapter</h3>
+      <p>Adaptador USB-C original de carga rápida.</p>
+      <p><strong>S/ 45</strong></p>
+      <a class="boton" onclick="agregarAlCarrito('Cargador Samsung 45W PD Adapter', 45)">Agregar al carrito</a>
+    </div>
+  </section>
+
+  <div class="carrito" id="carrito">
+    <h4>Carrito de compras</h4>
+    <div id="carrito-items"></div>
+    <div id="total"></div>
+    <button class="btn-pagar" onclick="pagar()">Pagar</button>
+    <div class="metodos-pago">
+      <p>Métodos de pago:</p>
+      <img src="https://upload.wikimedia.org/wikipedia/commons/5/58/Yape_Logo.png" alt="Yape">
+      <img src="https://seeklogo.com/images/P/plin-logo-7F39D13D1E-seeklogo.com.png" alt="Plin">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Logo_BCP.svg/512px-Logo_BCP.svg.png" alt="BCP">
+      <img src="https://seeklogo.com/images/B/banco-de-la-nacion-logo-F740F5DA3A-seeklogo.com.png" alt="Banco de la Nación">
+    </div>
+    <div class="qr-info">
+      <p>Escanea el QR para pagar:</p>
+      <img src="https://via.placeholder.com/100x100.png?text=QR" alt="QR Yape">
+      <p>Yape / Plin: <strong>987654321</strong></p>
+      <p>BCP / BN: <strong>Cuenta: 123-45678901-0-12</strong></p>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 Mi Tienda Online - Todos los derechos reservados</p>
+  </footer>
+
+  <script>
+    const carrito = [];
+
+    function agregarAlCarrito(producto, precio) {
+      carrito.push({ producto, precio });
+      renderizarCarrito();
+    }
+
+    function renderizarCarrito() {
+      const contenedor = document.getElementById('carrito-items');
+      const totalDiv = document.getElementById('total');
+      contenedor.innerHTML = '';
+      let total = 0;
+      carrito.forEach((item, index) => {
+        total += item.precio;
+        const div = document.createElement('div');
+        div.className = 'carrito-item';
+        div.innerHTML = `
+          <span>${item.producto} - S/ ${item.precio}</span>
+          <button onclick="eliminarItem(${index})">X</button>
+        `;
+        contenedor.appendChild(div);
+      });
+      totalDiv.innerHTML = `<strong>Total: S/ ${total}</strong>`;
+    }
+
+    function eliminarItem(index) {
+      carrito.splice(index, 1);
+      renderizarCarrito();
+    }
+
+    function pagar() {
+      if (carrito.length === 0) {
+        alert('El carrito está vacío.');
+        return;
+      }
+      const total = carrito.reduce((sum, item) => sum + item.precio, 0);
+      const mensaje = encodeURIComponent(
+        'Hola, quiero realizar una compra con los siguientes productos:\n' +
+        carrito.map((item, i) => `${i + 1}. ${item.producto} - S/ ${item.precio}`).join('\n') +
+        `\nTotal a pagar: S/ ${total}`
+      );
+      const telefono = '987654321';
+      window.open(`https://wa.me/51${telefono}?text=${mensaje}`, '_blank');
+    }
+  </script>
+</body>
+</html>
